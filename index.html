@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Prueba</title>
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<style>
+			#plugin
+			{
+				background: url(sw-alpha.png);
+				width:260px; 
+				height:215px; 
+				border:1px solid #000; 
+				overflow-y:scroll;
+				margin: 0
+				padding: 0;
+				position:relative;
+				top:15px;
+				
+			}
+			
+			#mylista
+			{
+				margin: 97px 0 97px 0;
+				padding: 0;
+			}
+			
+			#mylista li
+			{
+				height:44px;
+				list-style: none;
+				padding:0;
+				position:relative;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<!--<button id="btnSelleccionar">Selecciona</button>-->
+			<button id="btnGet">Seleccionado</button>
+		</div>
+		<div id="plugin">
+			<!--<div id="centro" style="width:100%; background:red; display: inline-block;vertical-align: middle; z-index:333; float:left; opacity: 0.4;">centro</div>-->
+			<ul id="mylista">
+				
+			</ul>
+		</div>
+		<div style="position:relative; top:50px;">
+			<input type="text" id="tbSeleccionado"></input>	
+		</div>
+		<script>
+			$(document).on("ready",function(){
+				var seleccionado = 0;
+				var band = 0;
+				for(var i = 0;i < 400;i++)
+				{	
+					$("#mylista").append("<li>Item "+i+"</li>");
+					/*if(band == 0)
+					{	
+						$("#mylista").append("<li>Item "+i+"</li>");
+						band = 1;
+					}
+					else
+					{
+						$("#mylista").append("<li style='background:#D9DFF0;'>Item "+i+"</li>");
+						band = 0;
+					}*/
+				}
+					
+			$("#btnSelleccionar").on("click",function(){
+				newpluginscroll();
+			});	
+			
+			/********************************************************************/
+				(function( $ ) {
+					$(function() {
+						$( "#plugin" ).scroll(function(event) {
+							event.preventDefault(); 
+							clearTimeout( $.data( this, "scrollCheck" ) );
+							$.data( this, "scrollCheck", setTimeout(function() { event.preventDefault();  
+								newpluginscroll();
+							}, 150) );
+						});
+					});
+				})( jQuery );
+			/********************************************************************/	
+				newpluginscroll = function(){
+					seleccionado = 0;
+					var total = $("#mylista li").length - 1;
+					var offset = $('#plugin ul li').first().position().top;
+					var item = (97 - (44 * (offset / 44))) / 44;
+					item = Math.ceil(item);
+					seleccionado = item;
+					if(item > 1)
+					{	
+						if  (item > total)
+						{
+							item = total;
+							$('#plugin').scrollTop((44*item));	
+						}
+						else
+							$('#plugin').scrollTop((44*item));	
+					}
+				};
+			
+			
+				$("#btnGet").on("click",function(){$("#tbSeleccionado").val(seleccionado);});
+			});
+			
+			
+		</script>
+	</body>
+</html>
