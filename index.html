@@ -7,7 +7,7 @@
 			#plugin
 			{
 				background: url(sw-alpha.png);
-				width:260px; 
+				width:110px; 
 				height:215px; 
 				border:1px solid #000; 
 				overflow-y:scroll;
@@ -28,8 +28,9 @@
 			{
 				height:44px;
 				list-style: none;
-				padding:0;
+				padding:0 8px;
 				position:relative;
+				overflow:hidden;
 			}
 		</style>
 	</head>
@@ -50,20 +51,11 @@
 		<script>
 			$(document).on("ready",function(){
 				var seleccionado = 0;
+				var total = 0;
 				var band = 0;
-				for(var i = 0;i < 400;i++)
+				for(var i = 0;i < 200;i++)
 				{	
 					$("#mylista").append("<li>Item "+i+"</li>");
-					/*if(band == 0)
-					{	
-						$("#mylista").append("<li>Item "+i+"</li>");
-						band = 1;
-					}
-					else
-					{
-						$("#mylista").append("<li style='background:#D9DFF0;'>Item "+i+"</li>");
-						band = 0;
-					}*/
 				}
 					
 			$("#btnSelleccionar").on("click",function(){
@@ -78,30 +70,44 @@
 							clearTimeout( $.data( this, "scrollCheck" ) );
 							$.data( this, "scrollCheck", setTimeout(function() { event.preventDefault();  
 								newpluginscroll();
-							}, 150) );
+							},50) );
 						});
 					});
 				})( jQuery );
 			/********************************************************************/	
-				newpluginscroll = function(){
+				var newpluginscroll = function(){
 					seleccionado = 0;
-					var total = $("#mylista li").length - 1;
+					total = $("#mylista li").length - 1;
 					var offset = $('#plugin ul li').first().position().top;
 					var item = (97 - (44 * (offset / 44))) / 44;
-					item = Math.ceil(item);
+					var down = Math.floor(item);
+					if(item >= (down + .5)) 
+						item = down + 1;
+					else	
+						item = down;
 					seleccionado = item;
-					if(item > 1)
-					{	
-						if  (item > total)
-						{
-							item = total;
-							$('#plugin').scrollTop((44*item));	
-						}
-						else
-							$('#plugin').scrollTop((44*item));	
+					
+					if  (item > total)
+					{
+						item = total;
+						$('#plugin').animate({ scrollTop: (44*item) },200);
+					}
+					else
+						$('#plugin').animate({ scrollTop: (44*item) },200);
+					
+					/*cargar mas*/
+					if ((total - seleccionado) < 20)
+					{
+						cargarmasitems();
 					}
 				};
 			
+				var cargarmasitems = function(){
+					for(var i = (total + 1) ;i < (total + 201);i++)
+					{	
+						$("#mylista").append("<li>Item "+i+"</li>");
+					}
+				};
 			
 				$("#btnGet").on("click",function(){$("#tbSeleccionado").val(seleccionado);});
 			});
